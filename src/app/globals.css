@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+/*
+ * TIM REPUESTOS · tokens de diseño
+ * Contrastes verificados (WCAG AA):
+ *  - brand #77C932 sobre graphite: 8.5:1 → usar verde sobre oscuro o como fondo con texto graphite
+ *  - brand-ink #3D7417 sobre blanco: 5.7:1 → verde para texto sobre fondos claros
+ *  - muted #5B6463 sobre paper: 5.8:1 → texto secundario
+ *  - NUNCA texto blanco sobre verde de marca (2.1:1)
+ */
+@theme {
+  --color-graphite: #141a1d;
+  --color-carbon: #222a2c;
+  --color-carbon-2: #2c3538;
+  --color-brand: #77c932;
+  --color-brand-hover: #8ad448;
+  --color-brand-ink: #3d7417;
+  --color-brand-soft: #eef7e6;
+  --color-paper: #f7f9f7;
+  --color-line: #dfe5df;
+  --color-line-dark: #34403f;
+  --color-muted: #5b6463;
+  --color-muted-dark: #aab4b2;
+  --color-danger: #b42318;
+  --color-danger-soft: #fef1f0;
+  --color-warn: #8a5a00;
+  --color-warn-soft: #fff6e0;
+  --color-info: #1f5c99;
+  --color-info-soft: #eef5fc;
+
+  --font-sans: var(--font-manrope), ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: var(--font-space-grotesk), var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
+
+  --radius-card: 14px;
+  --shadow-card: 0 1px 2px rgb(20 26 29 / 0.04), 0 4px 16px -8px rgb(20 26 29 / 0.10);
+  --shadow-lift: 0 2px 4px rgb(20 26 29 / 0.05), 0 12px 32px -12px rgb(20 26 29 / 0.20);
+
+  --animate-fade-up: fade-up 0.35s ease-out both;
+  @keyframes fade-up {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+    scroll-behavior: smooth;
+    scroll-padding-top: 5rem;
+  }
+  body {
+    @apply bg-paper text-graphite font-sans antialiased;
+    min-height: 100dvh;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-balance;
+  }
+  ::selection {
+    background: var(--color-brand);
+    color: var(--color-graphite);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-brand-ink);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+  .on-dark :focus-visible {
+    outline-color: var(--color-brand);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .eyebrow {
+    @apply inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-brand-ink;
+  }
+  .on-dark .eyebrow {
+    @apply text-brand;
+  }
+  .tech-grid {
+    background-image:
+      linear-gradient(to right, rgb(255 255 255 / 0.045) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .tech-grid-light {
+    background-image:
+      linear-gradient(to right, rgb(20 26 29 / 0.05) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(20 26 29 / 0.05) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+  .prose-legal h2 { @apply mt-8 mb-2 text-xl font-semibold; }
+  .prose-legal p, .prose-legal li { @apply text-[15px] leading-7 text-carbon; }
+  .prose-legal ul { @apply list-disc pl-5 space-y-1; }
+}

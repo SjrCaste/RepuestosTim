@@ -1,0 +1,11 @@
+<!-- Supabase → Authentication → Emails → "Reset password". Asunto sugerido: Restablecé tu contraseña · TIM REPUESTOS -->
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#141A1D">
+  <p style="font-size:18px;font-weight:bold">TIM <span style="color:#3D7417">REPUESTOS</span></p>
+  <h2 style="font-size:20px">Restablecé tu contraseña</h2>
+  <p>Recibimos un pedido para cambiar la contraseña de tu cuenta. El enlace vence en poco tiempo y se puede usar una sola vez.</p>
+  <p style="margin:28px 0">
+    <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=recovery&next=/restablecer"
+       style="background:#77C932;color:#141A1D;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Elegir nueva contraseña</a>
+  </p>
+  <p style="font-size:13px;color:#5B6463">Si no lo pediste, ignorá este mensaje: tu contraseña no cambia.</p>
+</div>

@@ -1,0 +1,11 @@
+<!-- Supabase → Authentication → Emails → "Confirm signup". Asunto sugerido: Confirmá tu cuenta en TIM REPUESTOS -->
+<div style="font-family:Arial,Helvetica,sans-serif;max-width:520px;margin:0 auto;color:#141A1D">
+  <p style="font-size:18px;font-weight:bold">TIM <span style="color:#3D7417">REPUESTOS</span></p>
+  <h2 style="font-size:20px">Confirmá tu email</h2>
+  <p>Hola, gracias por registrarte. Para activar tu cuenta y acceder al catálogo, confirmá tu email:</p>
+  <p style="margin:28px 0">
+    <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email&next=/catalogo"
+       style="background:#77C932;color:#141A1D;padding:12px 20px;border-radius:8px;text-decoration:none;font-weight:bold">Confirmar mi cuenta</a>
+  </p>
+  <p style="font-size:13px;color:#5B6463">Si no creaste una cuenta, ignorá este mensaje.</p>
+</div>
