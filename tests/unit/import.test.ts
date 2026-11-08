@@ -49,6 +49,15 @@ describe("parseo CSV", () => {
     expect(r.errors.map((e) => e.row)).toEqual([4, 5, 6, 7]);
   });
 
+  it("saltea filas de título arriba de los encabezados (formato TOCHTER)", () => {
+    const csv = "Lista de Precios\r\nCODART,DESCRIPCIO,MARCA,SUBRUBRO,PRCOSTO,PRVENTA,LINKFOTO,OBSERVAC\r\n10000TOC,AMORT,TOCHTER,AMORTIGUADORES,1,2,C:\\FOTOS\\X.JPG,\r\n";
+    const t = parseImportFile(enc(csv), "t.csv");
+    expect(t.headers[0]).toBe("CODART");
+    expect(t.rows).toHaveLength(1);
+    expect(suggestMapping(t.headers, "catalog")).toMatchObject({ sku: 0, name: 1, brand: 2, category: 3, sale_price_ars: 5, original_image_path: 6, description: 7 });
+    expect(suggestMapping(t.headers, "costs")).toEqual({ sku: 0, cost_price_ars: 4 });
+  });
+
   it("rechaza archivos vacíos, binarios y Excel antiguo", () => {
     expect(() => parseImportFile(new Uint8Array(), "a.csv")).toThrow(ImportFileError);
     expect(() =>

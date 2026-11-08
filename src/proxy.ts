@@ -1,5 +1,6 @@
 import { NextResponse, type NextRequest } from "next/server";
 import { updateSession } from "@/lib/supabase/proxy";
+import { isLocalDemo } from "@/lib/env";
 
 const PROTECTED = ["/catalogo", "/cuenta", "/admin"];
 
@@ -11,7 +12,8 @@ const PROTECTED = ["/catalogo", "/cuenta", "/admin"];
 export async function proxy(request: NextRequest) {
   const { response, hasUser } = await updateSession(request);
   const { pathname, search } = request.nextUrl;
-  const isProtected = PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
+  const isDemoCatalog = isLocalDemo && (pathname === "/catalogo" || pathname.startsWith("/catalogo/"));
+  const isProtected = !isDemoCatalog && PROTECTED.some((p) => pathname === p || pathname.startsWith(`${p}/`));
 
   if (isProtected && !hasUser) {
     const url = request.nextUrl.clone();

@@ -1,6 +1,42 @@
 import "server-only";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { createClient } from "@/lib/supabase/server";
+import { isLocalDemo } from "@/lib/env";
+import { demoFacets, demoProduct, demoSearch } from "@/lib/demo-catalog";
+
+/** Lista de consulta del modo demo: cookie httpOnly { SKU: cantidad }. */
+export const DEMO_LIST_COOKIE = "demo_list";
+
+export async function readDemoList(): Promise<Record<string, number>> {
+  try {
+    const raw = (await cookies()).get(DEMO_LIST_COOKIE)?.value;
+    const parsed = raw ? (JSON.parse(raw) as Record<string, number>) : {};
+    const out: Record<string, number> = {};
+    for (const [sku, qty] of Object.entries(parsed)) {
+      if (/^[A-Z0-9 ._\-/]{1,64}$/.test(sku) && Number.isInteger(qty) && qty >= 1 && qty <= 999) out[sku] = qty;
+    }
+    return out;
+  } catch {
+    return {};
+  }
+}
+
+function demoItem(p: NonNullable<ReturnType<typeof demoProduct>>): CatalogItem {
+  return {
+    id: p.id,
+    sku: p.sku,
+    name: p.name,
+    brand_name: p.brand_name,
+    brand_slug: p.brand_slug,
+    category_name: p.category_name,
+    category_slug: p.category_slug,
+    sale_price_ars: null,
+    stock_status: "unknown",
+    image_path: null,
+    image_url: null,
+  };
+}
 
 export const PAGE_SIZE = 24;
 export const SORTS = [
@@ -71,8 +107,12 @@ export async function searchCatalog(params: {
   orden?: string;
   pagina?: number;
 }): Promise<{ items: CatalogItem[]; total: number; page: number; pageSize: number }> {
-  const supabase = await createClient();
   const page = Math.max(1, Math.min(1000, Math.floor(params.pagina ?? 1)));
+  if (isLocalDemo) {
+    const r = demoSearch({ ...params, pagina: page, pageSize: PAGE_SIZE });
+    return { items: r.items.map(demoItem), total: r.total, page, pageSize: PAGE_SIZE };
+  }
+  const supabase = await createClient();
   const { data, error } = await supabase.rpc("catalog_search", {
     p_query: params.q?.slice(0, 120) || null,
     p_category: params.categoria || null,
@@ -93,6 +133,12 @@ export async function searchCatalog(params: {
 }
 
 export async function getProduct(sku: string): Promise<ProductDetail | null> {
+  if (isLocalDemo) {
+    const p = demoProduct(sku);
+    if (!p) return null;
+    const list = await readDemoList();
+    return { ...demoItem(p), description: p.description, compatibility: null, specs: {}, in_list_quantity: list[p.sku] ?? null };
+  }
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("catalog_product", { p_sku: sku.slice(0, 64) });
   handle(error);
@@ -103,6 +149,7 @@ export async function getProduct(sku: string): Promise<ProductDetail | null> {
 }
 
 export async function getFacets(): Promise<Facets> {
+  if (isLocalDemo) return demoFacets();
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("catalog_facets");
   handle(error);
@@ -122,6 +169,15 @@ export interface ListItem {
 }
 
 export async function getInquiryList(): Promise<ListItem[]> {
+  if (isLocalDemo) {
+    const list = await readDemoList();
+    return Object.entries(list).flatMap(([sku, quantity]) => {
+      const p = demoProduct(sku);
+      return p
+        ? [{ product_id: p.id, sku: p.sku, name: p.name, brand_name: p.brand_name, image_path: null, image_url: null, quantity, sale_price_ars: null, available: true }]
+        : [];
+    });
+  }
   const supabase = await createClient();
   const { data, error } = await supabase.rpc("inquiry_list_get");
   handle(error);
@@ -131,6 +187,7 @@ export async function getInquiryList(): Promise<ListItem[]> {
 }
 
 export async function getListCount(): Promise<number> {
+  if (isLocalDemo) return Object.keys(await readDemoList()).length;
   try {
     const supabase = await createClient();
     const { count } = await supabase.from("inquiry_list_items").select("product_id", { count: "exact", head: true });

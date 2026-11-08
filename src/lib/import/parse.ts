@@ -241,17 +241,29 @@ function parseXlsx(buf: Uint8Array): ParsedTable {
     warnings.push(`${formulaCells} celdas tienen fórmulas: se usó el último valor calculado guardado, sin ejecutarlas.`);
   }
 
-  // Encabezado = primera fila no vacía
-  const dense = Array.from({ length: grid.length }, (_, i) => grid[i] ?? []);
-  const headerIdx = dense.findIndex((r) => r.some((c) => c !== null && c !== undefined && String(c).trim() !== ""));
-  if (headerIdx < 0) throw new ImportFileError("La hoja está vacía.");
-  const headers = Array.from(dense[headerIdx], (c) => (c === null || c === undefined ? "" : String(c)));
-  const rows = dense.slice(headerIdx + 1).map((r) => Array.from({ length: headers.length }, (_, i) => r[i] ?? null));
-  return { format: "xlsx", headers, rows, warnings, sheetName: sheet.name };
+  // La fila de encabezados se detecta en finalizeTable (puede haber filas de título arriba)
+  const dense = Array.from({ length: grid.length }, (_, i) => Array.from(grid[i] ?? [], (c) => c ?? null));
+  if (!dense.length) throw new ImportFileError("La hoja está vacía.");
+  const [first, ...rest] = dense;
+  return { format: "xlsx", headers: first.map((c) => (c === null ? "" : String(c))), rows: rest, warnings, sheetName: sheet.name };
 }
 
 // ---------------------------------------------------------------------------
+const filled = (r: CellValue[]) => r.filter((c) => c !== null && c !== undefined && String(c).trim() !== "").length;
+
+/**
+ * Encabezado = primera fila (entre las 20 primeras) con al menos 3 celdas
+ * completas. Así se saltean títulos como "Lista de Precios" arriba de la tabla.
+ */
 function finalizeTable(t: ParsedTable): ParsedTable {
+  const all: CellValue[][] = [t.headers, ...t.rows];
+  let headerIdx = all.slice(0, 20).findIndex((r) => filled(r) >= 3);
+  if (headerIdx < 0) headerIdx = all.findIndex((r) => filled(r) > 0);
+  if (headerIdx < 0) throw new ImportFileError("El archivo está vacío.");
+  if (headerIdx > 0) t.warnings.push(`Se omitieron ${headerIdx} fila(s) de título antes de los encabezados.`);
+  const width = Math.min(IMPORT_LIMITS.maxColumns, Math.max(...all.slice(headerIdx).map((r) => r.length)));
+  const headerRow = Array.from({ length: width }, (_, i) => all[headerIdx][i] ?? "");
+  t = { ...t, headers: headerRow.map((c) => (c === null ? "" : String(c))), rows: all.slice(headerIdx + 1) };
   const headers = t.headers.slice(0, IMPORT_LIMITS.maxColumns).map((h, i) => {
     const s = String(h ?? "").replace(/^﻿/, "").trim();
     return s || `Columna ${i + 1}`;

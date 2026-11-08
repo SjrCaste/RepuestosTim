@@ -50,7 +50,7 @@ export function InquiryList({ initialItems, pricesVisible }: { initialItems: Lis
     return (
       <div className="rounded-2xl border border-brand-ink/25 bg-white p-6 sm:p-8" role="status">
         <CircleCheck className="size-10 text-brand-ink" aria-hidden />
-        <h2 className="mt-4 text-2xl font-semibold">Consulta #{result.number} registrada</h2>
+        <h2 className="mt-4 text-2xl font-semibold">{result.number ? `Consulta #${result.number} registrada` : "Consulta lista para enviar"}</h2>
         <p className="mt-2 text-[15px] leading-7 text-muted">
           Si WhatsApp no se abrió automáticamente, tocá el botón para enviar el mensaje. El local te va a responder con precio y disponibilidad.
         </p>
@@ -99,7 +99,7 @@ export function InquiryList({ initialItems, pricesVisible }: { initialItems: Lis
               </Link>
               <div className="min-w-0 flex-1">
                 <p className="font-mono text-xs font-semibold text-muted">SKU {it.sku}</p>
-                <Link href={`/catalogo/${encodeURIComponent(it.sku)}`} className="mt-0.5 line-clamp-2 font-semibold hover:text-brand-ink hover:underline">
+                <Link href={`/catalogo/${encodeURIComponent(it.sku)}`} className="mt-0.5 line-clamp-2 font-semibold [overflow-wrap:anywhere] hover:text-brand-ink hover:underline">
                   {it.name}
                 </Link>
                 {it.brand_name ? <p className="text-[13px] text-muted">{it.brand_name}</p> : null}

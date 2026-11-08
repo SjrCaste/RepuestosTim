@@ -24,10 +24,10 @@ export interface FieldDef {
 }
 
 export const CATALOG_FIELDS: FieldDef[] = [
-  { key: "sku", label: "SKU / código", required: true, synonyms: ["sku", "codigo", "cod", "codigo_articulo", "cod_articulo", "articulo", "code"] },
-  { key: "name", label: "Nombre", required: true, synonyms: ["nombre", "name", "descripcion", "descrip", "detalle", "producto"] },
+  { key: "sku", label: "SKU / código", required: true, synonyms: ["sku", "codigo", "cod", "codart", "codigo_articulo", "cod_articulo", "articulo", "code"] },
+  { key: "name", label: "Nombre", required: true, synonyms: ["nombre", "name", "descripcion", "descripcio", "descrip", "detalle", "producto"] },
   { key: "brand", label: "Marca", required: false, synonyms: ["marca", "brand", "fabricante"] },
-  { key: "category", label: "Categoría / rubro", required: false, synonyms: ["categoria", "rubro", "familia", "category", "linea"] },
+  { key: "category", label: "Categoría / rubro", required: false, synonyms: ["categoria", "rubro", "subrubro", "familia", "category", "linea"] },
   {
     key: "sale_price_ars",
     label: "Precio de venta (ARS)",
@@ -35,19 +35,19 @@ export const CATALOG_FIELDS: FieldDef[] = [
     help: "Se guarda pero NO se muestra a clientes hasta activar “precios visibles” en Configuración.",
     synonyms: ["precio_venta_ars", "prventa", "precio_venta", "pventa", "precio", "price"],
   },
-  { key: "description", label: "Descripción adicional", required: false, synonyms: ["descripcion_adicional", "observaciones", "obs", "notas", "description"] },
+  { key: "description", label: "Descripción adicional", required: false, synonyms: ["descripcion_adicional", "observaciones", "observac", "obs", "notas", "description"] },
   {
     key: "original_image_path",
     label: "Ruta de imagen original",
     required: false,
     help: "Rutas locales (C:\\FOTOS\\...) no son URLs: sólo se usan para asociar fotos subidas después.",
-    synonyms: ["imagen_referencia_original", "foto", "imagen", "image", "ruta_imagen"],
+    synonyms: ["imagen_referencia_original", "linkfoto", "foto", "imagen", "image", "ruta_imagen"],
   },
   { key: "active", label: "Activo", required: false, synonyms: ["activo", "active", "habilitado"] },
 ];
 
 export const COST_FIELDS: FieldDef[] = [
-  { key: "sku", label: "SKU / código", required: true, synonyms: ["sku", "codigo", "cod", "codigo_articulo", "articulo", "code"] },
+  { key: "sku", label: "SKU / código", required: true, synonyms: ["sku", "codigo", "cod", "codart", "codigo_articulo", "articulo", "code"] },
   {
     key: "cost_price_ars",
     label: "Precio de costo (ARS)",

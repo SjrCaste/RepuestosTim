@@ -3,6 +3,7 @@ import { MobileNav, SessionAwareActions } from "./public-header-client";
 
 export const PUBLIC_NAV = [
   { href: "/", label: "Inicio" },
+  { href: "/catalogo", label: "Catálogo" },
   { href: "/categorias", label: "Categorías" },
   { href: "/como-comprar", label: "Cómo comprar" },
   { href: "/nosotros", label: "Nosotros" },

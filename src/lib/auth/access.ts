@@ -2,7 +2,7 @@ import "server-only";
 import { cache } from "react";
 import { redirect, notFound } from "next/navigation";
 import { createClient } from "@/lib/supabase/server";
-import { isSupabaseConfigured } from "@/lib/env";
+import { isLocalDemo, isSupabaseConfigured } from "@/lib/env";
 
 export interface Access {
   authenticated: boolean;
@@ -48,7 +48,17 @@ export async function requireUser(next = "/cuenta"): Promise<Access> {
 }
 
 /** Catálogo: sesión + email verificado + cuenta aprobada (o aprobación desactivada). */
+export const DEMO_ACCESS: Access = {
+  authenticated: true,
+  full_name: "Invitado",
+  can_view_catalog: true,
+  is_admin: false,
+  status: "active",
+  role: "customer",
+};
+
 export async function requireCatalogAccess(next = "/catalogo"): Promise<Access> {
+  if (isLocalDemo) return DEMO_ACCESS;
   const access = await requireUser(next);
   if (!access.can_view_catalog) redirect("/cuenta");
   return access;

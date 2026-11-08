@@ -65,7 +65,7 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
             {product.brand_name ? <Badge>{product.brand_name}</Badge> : null}
             {stock ? <Badge tone={stock.tone}>{stock.label}</Badge> : null}
           </div>
-          <h1 className="mt-4 text-2xl font-semibold leading-tight sm:text-3xl">{product.name}</h1>
+          <h1 className="mt-4 text-2xl font-semibold leading-tight [overflow-wrap:anywhere] sm:text-3xl">{product.name}</h1>
           {product.category_name ? (
             <p className="mt-2 text-[15px] text-muted">
               Categoría:{" "}

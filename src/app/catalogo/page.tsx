@@ -95,8 +95,8 @@ export default async function CatalogoPage({ searchParams }: { searchParams: Pro
       {result.items.length > 0 ? (
         <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {result.items.map((item) => (
-            <li key={item.id} className="flex">
-              <div className="flex w-full [&>article]:w-full">
+            <li key={item.id} className="flex min-w-0">
+              <div className="flex w-full min-w-0 [&>article]:w-full [&>article]:min-w-0">
                 <ProductCard item={item} pricesVisible={facets.prices_visible} />
               </div>
             </li>

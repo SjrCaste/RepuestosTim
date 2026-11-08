@@ -20,7 +20,7 @@ export function ProductCard({ item, pricesVisible }: { item: CatalogItem; prices
           {item.brand_name ? <Badge>{item.brand_name}</Badge> : null}
           {stock ? <Badge tone={stock.tone}>{stock.label}</Badge> : null}
         </div>
-        <h3 className="mt-3 line-clamp-3 text-[15px] font-semibold leading-snug">
+        <h3 className="mt-3 line-clamp-3 text-[15px] font-semibold leading-snug [overflow-wrap:anywhere]">
           <Link href={href} className="hover:text-brand-ink hover:underline">
             {item.name}
           </Link>

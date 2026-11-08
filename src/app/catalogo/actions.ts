@@ -6,6 +6,10 @@ import { assertSameOrigin } from "@/lib/security";
 import { getAccess } from "@/lib/auth/access";
 import { getSettings } from "@/lib/settings";
 import { buildInquiryMessage, whatsappUrl, type InquiryLine } from "@/lib/whatsapp";
+import { cookies } from "next/headers";
+import { isLocalDemo } from "@/lib/env";
+import { demoProduct } from "@/lib/demo-catalog";
+import { DEMO_LIST_COOKIE, getInquiryList, readDemoList } from "@/lib/catalog";
 
 export type ListActionResult = { ok: boolean; quantity?: number; message?: string };
 
@@ -23,8 +27,31 @@ function friendly(error: { code?: string; message: string }): string {
   return "No pudimos actualizar la lista. Intentá de nuevo.";
 }
 
+async function writeDemoList(list: Record<string, number>) {
+  (await cookies()).set(DEMO_LIST_COOKIE, JSON.stringify(list), {
+    httpOnly: true,
+    sameSite: "lax",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+}
+
 export async function setListItemAction(productId: string, quantity: number, mode: "set" | "add" = "set"): Promise<ListActionResult> {
   await assertSameOrigin();
+  if (isLocalDemo) {
+    const p = demoProduct(String(productId));
+    if (!p) return { ok: false, message: "Este producto no está en el catálogo." };
+    if (!Number.isInteger(quantity) || quantity < 0 || quantity > 999) return { ok: false, message: "Cantidad inválida (1 a 999)." };
+    const list = await readDemoList();
+    if (quantity === 0) delete list[p.sku];
+    else {
+      if (!list[p.sku] && Object.keys(list).length >= 100) return { ok: false, message: "Tu lista llegó al máximo de 100 productos." };
+      list[p.sku] = Math.min(999, mode === "add" ? (list[p.sku] ?? 0) + quantity : quantity);
+    }
+    await writeDemoList(list);
+    revalidatePath("/catalogo", "layout");
+    return { ok: true, quantity: list[p.sku] ?? 0 };
+  }
   const parsed = setSchema.safeParse({ productId, quantity, mode });
   if (!parsed.success) return { ok: false, message: "Cantidad inválida (1 a 999)." };
   const supabase = await createClient();
@@ -40,6 +67,11 @@ export async function setListItemAction(productId: string, quantity: number, mod
 
 export async function clearListAction(): Promise<ListActionResult> {
   await assertSameOrigin();
+  if (isLocalDemo) {
+    await writeDemoList({});
+    revalidatePath("/catalogo", "layout");
+    return { ok: true };
+  }
   const supabase = await createClient();
   const { error } = await supabase.rpc("inquiry_list_clear");
   if (error) return { ok: false, message: friendly(error) };
@@ -60,6 +92,19 @@ export type InquiryResult =
 export async function createInquiryAction(notes: string): Promise<InquiryResult> {
   await assertSameOrigin();
   const cleanNotes = String(notes ?? "").slice(0, 1000);
+  if (isLocalDemo) {
+    // Demo: no hay base para registrar la consulta; se arma el mensaje igual.
+    const [items, settings] = await Promise.all([getInquiryList(), getSettings()]);
+    if (!items.length) return { ok: false, message: "Tu lista está vacía." };
+    const message = buildInquiryMessage({
+      items: items.map((i) => ({ sku: i.sku, name: i.name, brand: i.brand_name, quantity: i.quantity })),
+      notes: cleanNotes,
+      storeName: settings.store_name,
+    });
+    await writeDemoList({});
+    revalidatePath("/catalogo", "layout");
+    return { ok: true, number: 0, whatsappUrl: whatsappUrl(settings.whatsapp_number, message), message };
+  }
   const [supabase, settings, access] = await Promise.all([createClient(), getSettings(), getAccess()]);
   const { data, error } = await supabase.rpc("inquiry_create", { p_notes: cleanNotes || null });
 

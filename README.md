@@ -11,7 +11,7 @@ npm test                     # 42 pruebas: normalización, importación, WhatsAp
 npm run typecheck && npm run build
 ```
 
-Sin variables de Supabase, la web pública funciona en **modo demostración** (datos del local por defecto) y todas las rutas privadas redirigen a login.
+Sin variables de Supabase, la web pública funciona en **modo demostración** (datos del local por defecto). En desarrollo (`npm run dev`), además, `/catalogo` muestra el **catálogo real** leído de `data/private/TOCHTER.XLS` (o del CSV preparado): sin costos, con precios ocultos y lista de consulta guardada en una cookie. Ese modo **nunca se activa en producción** ni cuando Supabase está configurado: ahí el catálogo exige login. `/admin` y `/cuenta` siempre requieren sesión.
 
 ---
 
