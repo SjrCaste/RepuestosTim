@@ -10,13 +10,13 @@ export function SiteFooter({ settings }: { settings: LoadedSettings }) {
   const year = new Date().getFullYear();
   return (
     <footer className="on-dark bg-graphite text-white">
-      <div className="container-page grid gap-10 py-14 md:grid-cols-[1.3fr_1fr_1fr] lg:py-16">
+      <div className="container-page grid gap-6 py-8 sm:gap-10 sm:py-14 md:grid-cols-[1.3fr_1fr_1fr] lg:py-16">
         <div>
           <Logo dark />
-          <p className="mt-4 max-w-sm text-[15px] leading-7 text-muted-dark">
+          <p className="mt-4 hidden max-w-sm text-[15px] leading-7 text-muted-dark sm:block">
             Repuestos para tu vehículo y atención personalizada en Garín, Buenos Aires.
           </p>
-          <div className="mt-6 flex gap-2">
+          <div className="mt-4 flex gap-2 sm:mt-6">
             {settings.instagram_url ? (
               <a
                 href={settings.instagram_url}
@@ -70,7 +70,7 @@ export function SiteFooter({ settings }: { settings: LoadedSettings }) {
           </ul>
         </div>
 
-        <div>
+        <div className="hidden md:block">
           <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-brand">Sitio</h2>
           <ul className="mt-4 grid gap-2.5 text-[15px] text-white/85">
             <li><Link className="hover:text-brand" href="/categorias">Categorías</Link></li>
@@ -85,7 +85,7 @@ export function SiteFooter({ settings }: { settings: LoadedSettings }) {
       <div className="border-t border-white/10">
         <div className="container-page flex flex-col gap-2 py-5 text-[13px] text-muted-dark sm:flex-row sm:items-center sm:justify-between">
           <p>© {year} {settings.store_name}. Garín, Buenos Aires.</p>
-          <p>Los precios y la disponibilidad se confirman con el local antes de cada compra.</p>
+          <p className="flex gap-4"><Link className="hover:text-brand" href="/privacidad">Privacidad</Link><Link className="hover:text-brand" href="/terminos">Términos</Link></p>
         </div>
       </div>
     </footer>
