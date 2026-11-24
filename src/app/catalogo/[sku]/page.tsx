@@ -85,7 +85,7 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
             </p>
           ) : null}
 
-          <div className="mt-6 rounded-2xl border border-line bg-white p-5 shadow-sm">
+          <div className="mt-6 rounded-2xl border border-line bg-white p-5 shadow-sm sm:p-6">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 pb-3">
               <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800">
                 <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -93,17 +93,32 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
               </span>
               <span className="text-xs text-muted">Envíos a todo el país · Factura A y B</span>
             </div>
-            <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">Cotización</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-carbon sm:text-3xl">
-              {price ?? <span className="text-xl text-brand-ink">Consultar precio</span>}
-            </p>
-            <p className="mt-1 text-[13px] text-muted">Precio por cantidad y por unidad. Disponibilidad confirmada al instante.</p>
-            <div className="mt-5">
-              <AddToList productId={product.id} productName={product.name} initialInList={product.in_list_quantity} />
+
+            <div className="my-4">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted">Presupuesto</p>
+              <h2 className="mt-1 text-2xl font-bold text-carbon sm:text-3xl">
+                Solicitar presupuesto
+              </h2>
+              <p className="mt-1.5 text-[14px] leading-relaxed text-muted">
+                Cotización inmediata por unidad o por cantidad para talleres mecánicos, casas de repuestos y particulares.
+              </p>
             </div>
-            <ButtonA href={whatsappUrl(settings.whatsapp_number, waMessage)} target="_blank" rel="noopener noreferrer" variant="outline" className="mt-2 w-full sm:w-auto">
-              <WhatsAppIcon /> Consultar sólo este producto
-            </ButtonA>
+
+            <div className="space-y-3">
+              <a
+                href={whatsappUrl(settings.whatsapp_number, waMessage)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex w-full items-center justify-center gap-2.5 rounded-xl bg-[#25D366] px-5 py-3.5 text-base font-semibold text-white shadow-sm transition-all hover:bg-[#20bd5a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#25D366]/50"
+              >
+                <WhatsAppIcon className="size-5" />
+                Solicitar presupuesto por WhatsApp
+              </a>
+
+              <div className="pt-2">
+                <AddToList productId={product.id} productName={product.name} initialInList={product.in_list_quantity} />
+              </div>
+            </div>
           </div>
 
           {product.description ? (

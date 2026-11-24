@@ -104,7 +104,7 @@ export default async function CatalogoPage({ searchParams }: { searchParams: Pro
           {result.items.map((item) => (
             <li key={item.id} className="flex min-w-0">
               <div className="flex w-full min-w-0 [&>article]:w-full [&>article]:min-w-0">
-                <ProductCard item={item} pricesVisible={facets.prices_visible} />
+                <ProductCard item={item} whatsappNumber={settings.whatsapp_number} />
               </div>
             </li>
           ))}

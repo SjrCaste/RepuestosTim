@@ -163,12 +163,12 @@ export function InquiryList({ initialItems, pricesVisible }: { initialItems: Lis
             ) : null}
           </Alert>
         ) : null}
-        <Button size="lg" className="mt-5 w-full" onClick={send} disabled={pending}>
+        <Button size="lg" className="mt-5 w-full bg-[#25D366] hover:bg-[#20bd5a] text-white" onClick={send} disabled={pending}>
           {pending ? <LoaderCircle className="animate-spin" aria-hidden /> : <WhatsAppIcon />}
-          Consultar estos repuestos
+          Solicitar presupuesto por WhatsApp
         </Button>
         <p className="mt-3 text-[13px] leading-5 text-muted">
-          Registramos tu consulta y se abre WhatsApp con los códigos, nombres y cantidades. No es una compra: el local confirma precio y disponibilidad.
+          Registramos tu lista y se abre WhatsApp con los códigos, nombres y cantidades para enviarte el presupuesto mayorista o minorista.
         </p>
       </aside>
     </div>
