@@ -16,6 +16,7 @@
     "test:db": "vitest run tests/db",
     "catalog:check": "tsx scripts/catalog-check.ts",
     "catalog:import-dry-run": "tsx scripts/import-dry-run.ts",
+    "catalog:seed": "tsx scripts/seed-catalog.ts",
     "admin:promote": "node scripts/promote-admin.mjs"
   },
   "dependencies": {

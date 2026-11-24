@@ -61,11 +61,18 @@ export default async function CatalogoPage({ searchParams }: { searchParams: Pro
 
   return (
     <div className="container-page py-6 sm:py-8">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-2">
+      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
         <div>
+          <div className="mb-2 flex items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-semibold text-emerald-800">
+              <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+              Venta Mayorista & Minorista
+            </span>
+            <span className="text-xs text-muted">Línea oficial TOCHTER · 980 artículos</span>
+          </div>
           <h1 className="text-2xl font-semibold sm:text-3xl">{catName ?? "Catálogo de repuestos"}</h1>
           <p className="mt-1 text-[15px] text-muted">
-            {facets.prices_visible ? "Precios orientativos: confirmá disponibilidad con el local." : "Agregá productos a tu lista y consultá precio y disponibilidad por WhatsApp."}
+            {facets.prices_visible ? "Precios orientativos: confirmá disponibilidad con el local." : "Armá tu lista con los repuestos que necesitás y consultanos cotización mayorista o minorista por WhatsApp."}
           </p>
         </div>
       </div>

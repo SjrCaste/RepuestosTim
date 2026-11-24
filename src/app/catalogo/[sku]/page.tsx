@@ -55,8 +55,15 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
       </Link>
 
       <div className="mt-5 grid gap-8 lg:grid-cols-[1fr_1.05fr] lg:gap-12">
-        <div className="overflow-hidden rounded-2xl border border-line bg-white">
-          <ProductImage src={product.image_url} alt={product.name} className="aspect-square w-full" priority />
+        <div className="overflow-hidden rounded-2xl border border-line bg-white shadow-sm">
+          <ProductImage
+            src={product.image_url}
+            alt={product.name}
+            category={product.category_name}
+            sku={product.sku}
+            className="aspect-square w-full"
+            priority
+          />
         </div>
 
         <div>
@@ -64,6 +71,9 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
             <span className="rounded-md bg-graphite px-2.5 py-1 font-mono text-sm font-semibold tracking-wide text-white">SKU {product.sku}</span>
             {product.brand_name ? <Badge>{product.brand_name}</Badge> : null}
             {stock ? <Badge tone={stock.tone}>{stock.label}</Badge> : null}
+            <span className="rounded-md bg-emerald-50 px-2 py-0.5 text-xs font-semibold text-emerald-700">
+              Mayorista & Minorista
+            </span>
           </div>
           <h1 className="mt-4 text-2xl font-semibold leading-tight [overflow-wrap:anywhere] sm:text-3xl">{product.name}</h1>
           {product.category_name ? (
@@ -75,14 +85,23 @@ export default async function ProductPage({ params }: { params: Promise<{ sku: s
             </p>
           ) : null}
 
-          <div className="mt-6 rounded-2xl border border-line bg-white p-5">
-            <p className="text-sm font-semibold uppercase tracking-[0.1em] text-muted">Precio</p>
-            <p className="mt-1 text-3xl font-semibold tabular-nums">{price ?? <span className="text-xl">Consultar precio</span>}</p>
-            <p className="mt-1 text-[13px] text-muted">Precio y disponibilidad se confirman con el local.</p>
+          <div className="mt-6 rounded-2xl border border-line bg-white p-5 shadow-sm">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line/60 pb-3">
+              <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-800">
+                <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />
+                Venta Mayorista y Minorista
+              </span>
+              <span className="text-xs text-muted">Envíos a todo el país · Factura A y B</span>
+            </div>
+            <p className="mt-3 text-sm font-semibold uppercase tracking-[0.1em] text-muted">Cotización</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-carbon sm:text-3xl">
+              {price ?? <span className="text-xl text-brand-ink">Consultar precio</span>}
+            </p>
+            <p className="mt-1 text-[13px] text-muted">Precio por cantidad y por unidad. Disponibilidad confirmada al instante.</p>
             <div className="mt-5">
               <AddToList productId={product.id} productName={product.name} initialInList={product.in_list_quantity} />
             </div>
-            <ButtonA href={whatsappUrl(settings.whatsapp_number, waMessage)} target="_blank" rel="noopener noreferrer" variant="outline" className="mt-1 w-full sm:w-auto">
+            <ButtonA href={whatsappUrl(settings.whatsapp_number, waMessage)} target="_blank" rel="noopener noreferrer" variant="outline" className="mt-2 w-full sm:w-auto">
               <WhatsAppIcon /> Consultar sólo este producto
             </ButtonA>
           </div>
